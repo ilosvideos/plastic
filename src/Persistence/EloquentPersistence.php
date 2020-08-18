@@ -108,7 +108,7 @@ class EloquentPersistence
         $document = $this->model->getDocumentData();
 
         $params = [
-            'id'    => $this->getUniqueId($document),
+            'id'    => $this->getUniqueId($document, $this->model),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
             'body'  => [
@@ -129,7 +129,7 @@ class EloquentPersistence
         $this->exitIfModelNotSet();
 
         $params = [
-            'id'    => $this->getUniqueId($document),
+            'id'    => $this->getUniqueId($document, $this->model),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
         ];
@@ -157,11 +157,11 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
-            $document = $this->model->getDocumentData();
+            $document = $item->getDocumentData();
 
             $params['body'][] = [
                 'index' => [
-                    '_id'    => $this->getUniqueId($document),
+                    '_id'    => $this->getUniqueId($document, $item),
                     '_type'  => $item->getDocumentType(),
                     '_index' => $modelIndex ? $modelIndex : $defaultIndex,
                 ],
@@ -187,11 +187,11 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
-            $document = $this->model->getDocumentData();
+            $document = $item->getDocumentData();
 
             $params['body'][] = [
                 'delete' => [
-                    '_id'    => $this->getUniqueId($document),
+                    '_id'    => $this->getUniqueId($document, $item),
                     '_type'  => $item->getDocumentType(),
                     '_index' => $modelIndex ? $modelIndex : $defaultIndex,
                 ],
@@ -229,9 +229,8 @@ class EloquentPersistence
      * @param array|null $document
      * @return String
      */
-    private function getUniqueId(array $document) : String {
-        \Log::info($document['type']."_".$this->model->getKey());
-        return $document['type']."_".$this->model->getKey();
+    private function getUniqueId(array $document, $item) : String {
+        return $document['type']."_".$item->getKey();
     }
 
 }
