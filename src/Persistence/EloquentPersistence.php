@@ -157,6 +157,7 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
+            $document = $this->model->getDocumentData();
 
             $params['body'][] = [
                 'index' => [
@@ -186,6 +187,7 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
+            $document = $this->model->getDocumentData();
 
             $params['body'][] = [
                 'delete' => [
@@ -224,13 +226,11 @@ class EloquentPersistence
     }
 
     /**
-     * @param array $document
+     * @param array|null $document
      * @return String
      */
-    private function getUniqueId(?array $document) : String {
-        if(empty($document)) {
-            $document = $this->model->getDocumentData();
-        }
+    private function getUniqueId(array $document) : String {
+        \Log::info($document['type']."_".$this->model->getKey());
         return $document['type']."_".$this->model->getKey();
     }
 
