@@ -44,7 +44,7 @@ class EloquentFiller implements FillerInterface
         $attributes = $hit['_source'];
 
         if (isset($hit['_id'])) {
-            $attributes[$key_name] = is_numeric($hit['_id']) ? intval($hit['_id']) : $hit['_id'];
+            $attributes[$key_name] = is_numeric($hit['_id']) ? intval($hit['_id']) : $hit['_source']['id'];
         }
 
         // Add fields to attributes
@@ -124,7 +124,7 @@ class EloquentFiller implements FillerInterface
                             $models = null;
                         } else {
 
-                          // Check if the relation field is single model or collections
+                            // Check if the relation field is single model or collections
                             if (!$multiLevelRelation = $this->isMultiLevelArray($value)) {
                                 $value = [$value];
                             }

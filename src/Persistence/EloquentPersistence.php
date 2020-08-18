@@ -81,7 +81,7 @@ class EloquentPersistence
         $document = $this->model->getDocumentData();
 
         $params = [
-            'id'    => $this->model->getKey(),
+            'id'    => $this->getUniqueId($document),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
             'body'  => $document,
@@ -108,7 +108,7 @@ class EloquentPersistence
         $document = $this->model->getDocumentData();
 
         $params = [
-            'id'    => $this->model->getKey(),
+            'id'    => $this->getUniqueId($document, $this->model),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
             'body'  => [
@@ -129,7 +129,7 @@ class EloquentPersistence
         $this->exitIfModelNotSet();
 
         $params = [
-            'id'    => $this->model->getKey(),
+            'id'    => $this->getUniqueId($document, $this->model),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
         ];
@@ -157,10 +157,11 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
+            $document = $item->getDocumentData();
 
             $params['body'][] = [
                 'index' => [
-                    '_id'    => $item->getKey(),
+                    '_id'    => $this->getUniqueId($document, $item),
                     '_type'  => $item->getDocumentType(),
                     '_index' => $modelIndex ? $modelIndex : $defaultIndex,
                 ],
@@ -186,10 +187,11 @@ class EloquentPersistence
 
         foreach ($collection as $item) {
             $modelIndex = $item->getDocumentIndex();
+            $document = $item->getDocumentData();
 
             $params['body'][] = [
                 'delete' => [
-                    '_id'    => $item->getKey(),
+                    '_id'    => $this->getUniqueId($document, $item),
                     '_type'  => $item->getDocumentType(),
                     '_index' => $modelIndex ? $modelIndex : $defaultIndex,
                 ],
@@ -222,4 +224,13 @@ class EloquentPersistence
             throw new MissingArgumentException('you should set the model first');
         }
     }
+
+    /**
+     * @param array|null $document
+     * @return String
+     */
+    private function getUniqueId(array $document, $item) : String {
+        return $document['type']."_".$item->getKey();
+    }
+
 }
