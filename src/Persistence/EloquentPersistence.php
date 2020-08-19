@@ -81,7 +81,7 @@ class EloquentPersistence
         $document = $this->model->getDocumentData();
 
         $params = [
-            'id'    => $this->getUniqueId($document),
+            'id'    => $this->getUniqueId($document, $this->model),
             'type'  => $this->model->getDocumentType(),
             'index' => $this->model->getDocumentIndex(),
             'body'  => $document,
@@ -127,6 +127,7 @@ class EloquentPersistence
     public function delete()
     {
         $this->exitIfModelNotSet();
+        $document = $this->model->getDocumentData();
 
         $params = [
             'id'    => $this->getUniqueId($document, $this->model),
